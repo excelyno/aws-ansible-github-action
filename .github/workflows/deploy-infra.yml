@@ -25,6 +25,7 @@ jobs:
     - name: Configure Ansible Inventory
       run: |
         # Buat inventory file dengan IP EC2 yang sudah ada
+        pwd
         cd ansible
         touch inventory
         echo "[web]" > ansible/inventory
