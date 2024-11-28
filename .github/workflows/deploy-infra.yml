@@ -25,6 +25,7 @@ jobs:
     - name: Configure Ansible Inventory
       run: |
         # Buat inventory file dengan IP EC2 yang sudah ada
+        cd ansible
         touch inventory
         echo "[web]" > ansible/inventory
         echo "172.31.21.248  ansible_ssh_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_ed25519" >> ansible/inventory
