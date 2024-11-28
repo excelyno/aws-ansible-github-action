@@ -1,0 +1,51 @@
+- name: Configure WordPress and MySQL
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update package repository
+      apt:
+        update_cache: yes
+
+    - name: Install required packages (on web)
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - nginx
+        - php
+        - php-fpm
+        - php-mysql
+        - unzip
+      when: "'web' in group_names"
+
+    - name: Install MySQL server (on db)
+      apt:
+        name: mariadb-server
+        state: present
+      when: "'db' in group_names"
+
+    - name: Configure MySQL database (on db)
+      shell: |
+        mysql -u root -e "CREATE DATABASE wordpress;"
+        mysql -u root -e "CREATE USER 'wp_user'@'%' IDENTIFIED BY 'strongpassword';"
+        mysql -u root -e "GRANT ALL PRIVILEGES ON wordpress.* TO 'wp_user'@'%';"
+        mysql -u root -e "FLUSH PRIVILEGES;"
+      when: "'db' in group_names"
+
+    - name: Download and configure WordPress (on web)
+      shell: |
+        cd /var/www/html
+        wget https://wordpress.org/latest.tar.gz
+        tar -xzf latest.tar.gz
+        mv wordpress/* .
+        rmdir wordpress
+        chown -R www-data:www-data /var/www/html
+        chmod -R 755 /var/www/html
+      when: "'web' in group_names"
+
+    - name: Restart Nginx (on web)
+      service:
+        name: nginx
+        state: restarted
+      when: "'web' in group_names"
