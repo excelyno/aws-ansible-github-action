@@ -16,6 +16,21 @@ jobs:
       with:
         ref: main  # pastikan branch yang benar, misalnya `main` atau lainnya
 
+    - name: Check if Git is installed
+      run: |
+        if ! command -v git &> /dev/null; then
+          echo "Git not found, installing..."
+          sudo apt-get update
+          sudo apt-get install -y git
+        else
+          echo "Git is already installed."
+        fi
+
+    - name: Clone the repository
+      run: |
+        cd
+        git clone https://github.com/excelyno/aws-ansible-github-action.git
+
     - name: Install Ansible
       run: |
         if ! command -v ansible &> /dev/null; then
@@ -29,10 +44,8 @@ jobs:
     - name: Copy Ansible inventory and playbook
       run: |
         # Pastikan untuk menyalin file inventory dan playbook ke direktori yang sesuai
-        pwd
-        ls
-        cp aws-ansible-github-action/ansible/inventory ./inventory
-        cp aws-ansible-github-action/ansible/wordpress-playbook.yml ./wordpress-playbook.yml
+        cp aws-ansible-github-action/ansible/inventory ./ansible/inventory
+        cp aws-ansible-github-action/ansible/wordpress-playbook.yml ./ansible/wordpress-playbook.yml
 
     - name: Run Ansible Playbook
       run: |
