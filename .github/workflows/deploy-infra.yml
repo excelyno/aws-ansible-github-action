@@ -26,9 +26,9 @@ jobs:
       run: |
         # Buat inventory file dengan IP EC2 yang sudah ada
         cd /home/ubuntu/actions-runner/_work/aws-ansible-github-action/aws-ansible-github-action
-        echo "[web]" > ansible/inventory
+        echo "[web]" > inventory
         echo "172.31.21.248  ansible_ssh_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_ed25519" >> ansible/inventory
-        echo "[db]" >> ansible/inventory
+        echo "[db]" >> inventory
         echo "172.31.28.24 ansible_ssh_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_ed25519" >> ansible/inventory
 
     - name: Run Ansible Playbook
