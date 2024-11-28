@@ -47,9 +47,10 @@ jobs:
         cd
         pwd
         # Pastikan untuk menyalin file inventory dan playbook ke direktori yang sesuai
-        cp aws-ansible-github-action/ansible/inventory ./ansible/inventory
-        cp aws-ansible-github-action/ansible/wordpress-playbook.yml ./ansible/wordpress-playbook.yml
+        sudo cp aws-ansible-github-action/ansible/inventory ./ansible/inventory
+        sudo cp aws-ansible-github-action/ansible/wordpress-playbook.yml ./ansible/wordpress-playbook.yml
 
     - name: Run Ansible Playbook
       run: |
+        cd /home/ubuntu/ansible/
         ansible-playbook -i ./inventory ./wordpress-playbook.yml
