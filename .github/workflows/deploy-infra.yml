@@ -43,6 +43,7 @@ jobs:
 
     - name: Copy Ansible inventory and playbook
       run: |
+        pwd
         # Pastikan untuk menyalin file inventory dan playbook ke direktori yang sesuai
         cp aws-ansible-github-action/ansible/inventory ./ansible/inventory
         cp aws-ansible-github-action/ansible/wordpress-playbook.yml ./ansible/wordpress-playbook.yml
