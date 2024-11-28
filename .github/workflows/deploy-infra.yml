@@ -1,36 +1,37 @@
-name: Deploy WordPress and Database
+name: Deploy WordPress with Ansible
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   deploy:
-    runs-on: self-hosted # Menggunakan self-hosted runner di control node
+    runs-on: [self-hosted, linux]  # Pastikan runner ini adalah self-hosted
 
     steps:
-    - name: Check and Install Ansible
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+      with:
+        ref: main  # pastikan branch yang benar, misalnya `main` atau lainnya
+
+    - name: Install Ansible
       run: |
-        if ! command -v ansible &> /dev/null
-        then
-            echo "Ansible belum terinstal. Menginstal Ansible sekarang..."
-            sudo apt update
-            sudo apt install -y ansible
+        if ! command -v ansible &> /dev/null; then
+          echo "Ansible not found, installing..."
+          sudo apt update
+          sudo apt install -y ansible
         else
-            echo "Ansible sudah terinstal. Versi:"
-            ansible --version
+          echo "Ansible is already installed."
         fi
 
-    - name: Configure Ansible Inventory
+    - name: Copy Ansible inventory and playbook
       run: |
-        # Buat inventory file dengan IP EC2 yang sudah ada
-        cd /home/ubuntu/actions-runner/_work/aws-ansible-github-action/aws-ansible-github-action
-        echo "[web]" > inventory
-        echo "172.31.21.248  ansible_ssh_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_ed25519" >> ansible/inventory
-        echo "[db]" >> inventory
-        echo "172.31.28.24 ansible_ssh_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_ed25519" >> ansible/inventory
+        # Pastikan untuk menyalin file inventory dan playbook ke direktori yang sesuai
+        cp aws-ansible-github-action/ansible/inventory ./inventory
+        cp aws-ansible-github-action/ansible/wordpress-playbook.yml ./wordpress-playbook.yml
 
     - name: Run Ansible Playbook
       run: |
-        ansible-playbook -i ansible/inventory ansible/wordpress-playbook.yml
+        ansible-playbook -i ./inventory ./wordpress-playbook.yml
