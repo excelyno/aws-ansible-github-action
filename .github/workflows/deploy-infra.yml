@@ -29,6 +29,7 @@ jobs:
     - name: Clone the repository
       run: |
         cd
+        rm -r aws-ansible-github-action
         git clone https://github.com/excelyno/aws-ansible-github-action.git
 
     - name: Install Ansible
